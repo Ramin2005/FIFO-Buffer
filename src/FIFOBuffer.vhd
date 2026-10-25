@@ -26,9 +26,6 @@ ARCHITECTURE Struct OF FIFOBuffer IS
     -- Counter 
     SIGNAL Count : unsigned(8 DOWNTO 0) := (OTHERS => '0');
 
-    -- Temp
-    SIGNAL TempOut : STD_LOGIC_VECTOR(63 DOWNTO 0);
-
     -- Constants
     CONSTANT Zero : unsigned(8 DOWNTO 0) := (OTHERS => '0');
     CONSTANT MaxCount : unsigned(8 DOWNTO 0) := (0 => '1', OTHERS => '0');
@@ -55,9 +52,8 @@ BEGIN
 
     END PROCESS;
 
-    TempOut <= Memory(to_integer(FirstPointer));
-    DataOut <= TempOut;
-
+    DataOut <= Memory(to_integer(FirstPointer));
+    
     Empty <= '1' WHEN Count = Zero ELSE
         '0';
 
