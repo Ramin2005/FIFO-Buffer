@@ -31,7 +31,7 @@ ARCHITECTURE Struct OF FIFOBuffer IS
 
     -- Constants
     CONSTANT Zero : unsigned(8 DOWNTO 0) := (OTHERS => '0');
-    CONSTANT MaxCount : unsigned(8 DOWNTO 0) := (0 => '1', OTHERS => '0');
+    CONSTANT MaxCount : unsigned(8 DOWNTO 0) := (8 => '1', OTHERS => '0');
 
 BEGIN
 
