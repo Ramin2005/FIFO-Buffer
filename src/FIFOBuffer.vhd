@@ -36,24 +36,32 @@ BEGIN
     BEGIN
 
         IF rising_edge(Clk) THEN
+            IF Reset = '1' THEN
 
-            IF Pop = '1' THEN
-                FirstPointer <= FirstPointer - to_unsigned(1, 8);
-                Count <= Count - to_unsigned(1, 9);
+                FirstPointer <= (OTHERS => '0');
+                LastPointer <= (OTHERS => '0');
+                Count <= (OTHERS => '0');
+
+            ELSE
+
+                IF Pop = '1' THEN
+                    FirstPointer <= FirstPointer - to_unsigned(1, 8);
+                    Count <= Count - to_unsigned(1, 9);
+                END IF;
+
+                IF Count < MaxCount AND Push = '1' THEN
+                    Memory(to_integer(LastPointer)) <= DataIn;
+                    LastPointer <= LastPointer + to_unsigned(1, 8);
+                    Count <= Count + to_unsigned(1, 9);
+                END IF;
+
             END IF;
-
-            IF Count < MaxCount AND Push = '1' THEN
-                Memory(to_integer(LastPointer)) <= DataIn;
-                LastPointer <= LastPointer + to_unsigned(1, 8);
-                Count <= Count + to_unsigned(1, 9);
-            END IF;
-
         END IF;
 
     END PROCESS;
 
     DataOut <= Memory(to_integer(FirstPointer));
-    
+
     Empty <= '1' WHEN Count = Zero ELSE
         '0';
 
