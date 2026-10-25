@@ -44,12 +44,12 @@ BEGIN
 
             ELSE
 
-                IF Pop = '1' THEN
+                IF Pop = '1' AND Count > Zero THEN
                     FirstPointer <= FirstPointer - to_unsigned(1, 8);
                     Count <= Count - to_unsigned(1, 9);
                 END IF;
 
-                IF Count < MaxCount AND Push = '1' THEN
+                IF Push = '1' AND Count < MaxCount THEN
                     Memory(to_integer(LastPointer)) <= DataIn;
                     LastPointer <= LastPointer + to_unsigned(1, 8);
                     Count <= Count + to_unsigned(1, 9);
