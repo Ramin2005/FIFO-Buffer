@@ -50,7 +50,7 @@ BEGIN
             ELSE
 
                 IF Pop = '1' AND Count > Zero THEN
-                    FirstPointer <= FirstPointer - to_unsigned(1, 8);
+                    FirstPointer <= FirstPointer + to_unsigned(1, 8);
                     Count <= Count - to_unsigned(1, 9);
                 END IF;
 
@@ -58,6 +58,10 @@ BEGIN
                     Memory(to_integer(LastPointer)) <= DataIn;
                     LastPointer <= LastPointer + to_unsigned(1, 8);
                     Count <= Count + to_unsigned(1, 9);
+                END IF;
+
+                IF Push = '1' AND Pop = '1' THEN
+                    Count <= Count;
                 END IF;
 
             END IF;
