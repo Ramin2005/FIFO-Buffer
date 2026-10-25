@@ -9,7 +9,7 @@ ENTITY FIFOBuffer IS
         Reset : IN STD_LOGIC;
         Clk : IN STD_LOGIC;
         DataOut : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
-        Invalid : OUT STD_LOGIC
+        Empty, Full : OUT STD_LOGIC
     );
 END ENTITY FIFOBuffer;
 
@@ -30,7 +30,8 @@ ARCHITECTURE Struct OF FIFOBuffer IS
     SIGNAL TempOut : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Constants
-    CONSTANT Zero : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    CONSTANT Zero : unsigned(8 DOWNTO 0) := (OTHERS => '0');
+    CONSTANT MaxCount : unsigned(8 DOWNTO 0) := (0 => '1', OTHERS => '0');
 
 BEGIN
 
@@ -38,13 +39,29 @@ BEGIN
     BEGIN
 
         IF rising_edge(Clk) THEN
+
+            IF Pop = '1' THEN
+                FirstPointer <= FirstPointer - to_unsigned(1, 8);
+                Count <= Count - to_unsigned(1, 9);
+            END IF;
+
+            IF Count < MaxCount AND Push = '1' THEN
+                Memory(to_integer(LastPointer)) <= DataIn;
+                LastPointer <= LastPointer + to_unsigned(1, 8);
+                Count <= Count + to_unsigned(1, 9);
+            END IF;
+
         END IF;
 
     END PROCESS;
 
     TempOut <= Memory(to_integer(FirstPointer));
     DataOut <= TempOut;
-    Invalid <= '1' WHEN TempOut = Zero ELSE
+
+    Empty <= '1' WHEN Count = Zero ELSE
+        '0';
+
+    Full <= '1' WHEN Count = MaxCount ELSE
         '0';
 
 END Struct;
