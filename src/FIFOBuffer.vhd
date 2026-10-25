@@ -3,12 +3,15 @@ USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
 ENTITY FIFOBuffer IS
+    GENERIC (
+        DataWidth : POSITIVE := 64
+    );
     PORT (
-        DataIn : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
+        DataIn : IN STD_LOGIC_VECTOR(DataWidth - 1 DOWNTO 0);
         Pop, Push : IN STD_LOGIC;
         Reset : IN STD_LOGIC;
         Clk : IN STD_LOGIC;
-        DataOut : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
+        DataOut : OUT STD_LOGIC_VECTOR(DataWidth - 1 DOWNTO 0);
         Empty, Full : OUT STD_LOGIC
     );
 END ENTITY FIFOBuffer;
@@ -16,7 +19,7 @@ END ENTITY FIFOBuffer;
 ARCHITECTURE Struct OF FIFOBuffer IS
 
     -- Memory
-    TYPE DataArray IS ARRAY (255 DOWNTO 0) OF STD_LOGIC_VECTOR(63 DOWNTO 0);
+    TYPE DataArray IS ARRAY (255 DOWNTO 0) OF STD_LOGIC_VECTOR(DataWidth - 1 DOWNTO 0);
     SIGNAL Memory : DataArray;
 
     -- Pointers
@@ -36,11 +39,13 @@ BEGIN
     BEGIN
 
         IF rising_edge(Clk) THEN
+
             IF Reset = '1' THEN
 
                 FirstPointer <= (OTHERS => '0');
                 LastPointer <= (OTHERS => '0');
                 Count <= (OTHERS => '0');
+                Memory <= (OTHERS => (OTHERS => '0'));
 
             ELSE
 
@@ -56,6 +61,7 @@ BEGIN
                 END IF;
 
             END IF;
+
         END IF;
 
     END PROCESS;
