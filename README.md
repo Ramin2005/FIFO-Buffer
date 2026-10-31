@@ -1,1 +1,1 @@
-# FIFO-Buffer
+# NoC
